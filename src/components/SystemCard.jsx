@@ -2,35 +2,75 @@ function SystemCard({ system }) {
     return (
         <div className="system-card">
             <div className="card-header">
-                <h2>{system.name}</h2>
+                <div>
+                    <p className="card-label">System</p>
+                    <h2>{system.name}</h2>
+                </div>
 
-                <div
-                    className={`status-dot ${
-                        system.color === "green"
-                            ? "green"
-                            : "red"
-                    }`}
-                />
+                <div className="card-status">
+                    <div
+                        className={`status-dot ${
+                            system.online ? "green" : "red"
+                        }`}
+                    />
+
+                    <span>
+                        {system.online ? "Online" : "Offline"}
+                    </span>
+                </div>
             </div>
 
-            <div className="info-row">
-                <span>Status</span>
-                <strong>{system.status}</strong>
+            <div className="sensor-section">
+                <h3>Water Level</h3>
+
+                <div className="sensor-list">
+                    {system.sensors.map((sensor) => (
+                        <div
+                            key={sensor.id}
+                            className="sensor-row"
+                        >
+                            <div
+                                className={`status-dot ${
+                                    sensor.state === "LOW"
+                                        ? "green"
+                                        : "red"
+                                }`}
+                            />
+
+                            <span className="sensor-name">
+                                {sensor.name}
+                            </span>
+
+                            <span
+                                className={`sensor-state ${
+                                    sensor.state === "LOW"
+                                        ? "ok"
+                                        : "warn"
+                                }`}
+                            >
+                                {sensor.state === "LOW"
+                                    ? "Submerged"
+                                    : "Dry"}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
 
-            <div className="info-row">
-                <span>Availability</span>
-                <strong>{system.availability}</strong>
-            </div>
+            <div className="card-footer">
+                <div className="footer-box">
+                    <span>Sensor Type</span>
+                    <strong>{system.sensorType}</strong>
+                </div>
 
-            <div className="info-row">
-                <span>Metric</span>
-                <strong>{system.metric}</strong>
-            </div>
-
-            <div className="info-row">
-                <span>Last Check</span>
-                <strong>{system.lastCheck}</strong>
+                <div className="footer-box">
+                    <span>Last Check</span>
+                    <strong>
+                        {new Date(
+                            system.lastCheck
+                        ).toLocaleTimeString()}
+                    </strong>
+                </div>
             </div>
         </div>
     );

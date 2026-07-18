@@ -15,7 +15,17 @@ import {
 
 function App() {
 
-    const [system, setSystem] = useState(null);
+    const [systems, setSystems] = useState([]);
+
+    function mapDeviceToSystem(device) {
+        return {
+            name: device.deviceId,
+            sensors: device.sensors,
+            sensorType: "Float Switches",
+            lastCheck: device.lastSeen,
+            online: device.online
+        };
+    }
 
     useEffect(() => {
 
@@ -23,48 +33,43 @@ function App() {
 
             try {
 
-                /* Ask echo server for backend URL */
                 await initializeBackend();
 
-                /* Connect Socket.IO */
                 initializeSocket();
 
-                /* Load initial system */
                 const devices = await getSystems();
 
-                if (devices.length > 0) {
+                setSystems(
+                    devices.map(mapDeviceToSystem)
+                );
 
-                    setSystem({
-                        name: "OHT",
-                        status: devices[0].sensorState,
-                        availability: "100%",
-                        metric: "Float Switch",
-                        lastCheck: devices[0].lastSeen,
-                        color:
-                            devices[0].sensorState === "HIGH"
-                                ? "green"
-                                : "red"
-                    });
-
-                }
-
-                /* Listen for live updates */
                 const socket = getSocket();
 
                 socket.on("deviceUpdated", (device) => {
 
                     console.log("Socket Update:", device);
 
-                    setSystem({
-                        name: "OHT",
-                        status: device.sensorState,
-                        availability: "100%",
-                        metric: "Float Switch",
-                        lastCheck: new Date().toLocaleTimeString(),
-                        color:
-                            device.sensorState === "HIGH"
-                                ? "green"
-                                : "red"
+                    const updatedSystem = mapDeviceToSystem(device);
+
+                    setSystems((prev) => {
+
+                        const index = prev.findIndex(
+                            (system) =>
+                                system.name === updatedSystem.name
+                        );
+
+                        if (index === -1) {
+
+                            return [...prev, updatedSystem];
+
+                        }
+
+                        const next = [...prev];
+
+                        next[index] = updatedSystem;
+
+                        return next;
+
                     });
 
                 });
@@ -108,24 +113,66 @@ function App() {
             </div>
 
             <section className="metrics">
-                <StatCard title="Systems" value="1" />
-                <StatCard title="Online" value={system ? "1" : "0"} />
-                <StatCard title="Alerts" value="0" />
-                <StatCard title="Uptime" value="100%" />
+
+                <StatCard
+                    title="Systems"
+                    value={systems.length.toString()}
+                />
+
+                <StatCard
+                    title="Online"
+                    value={
+                        systems
+                            .filter(system => system.online)
+                            .length
+                            .toString()
+                    }
+                />
+
+                <StatCard
+                    title="Alerts"
+                    value={
+                        systems
+                            .filter(system => !system.online)
+                            .length
+                            .toString()
+                    }
+                />
+
+                <StatCard
+                    title="Uptime"
+                    value={
+                        systems.length > 0
+                            ? `${Math.round(
+                                systems.filter(
+                                    system => system.online
+                                ).length /
+                                systems.length *
+                                100
+                            )}%`
+                            : "--"
+                    }
+                />
+
             </section>
 
             <section className="systems-grid">
 
-                {system && (
-                    <SystemCard system={system} />
-                )}
+                {systems.map((system) => (
+
+                    <SystemCard
+                        key={system.name}
+                        system={system}
+                    />
+
+                ))}
 
             </section>
 
             <footer>
                 Copyright © 2026 ATOWA.
                 All Rights Reserved.
-                Courtesy of Manish R and Anil Joseph
+                Courtesy of Anil Joseph
             </footer>
 
         </div>
