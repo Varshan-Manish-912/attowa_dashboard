@@ -1,13 +1,6 @@
-import { getBackendUrl } from "./backend.js";
+import { BACKEND_URL } from "../config/config.js";
 
 export async function getSystems() {
-
-    const response = await fetch(`${getBackendUrl()}/systems`, {
-        headers: {
-            "ngrok-skip-browser-warning": "true"
-        }
-    });
-
+    const response = await fetch(`${BACKEND_URL}/systems`);
     return await response.json();
-
 }

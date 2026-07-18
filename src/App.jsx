@@ -7,7 +7,6 @@ import StatCard from "./components/StatCard";
 import SystemCard from "./components/SystemCard";
 
 import { getSystems } from "./services/api";
-import { initializeBackend } from "./services/backend";
 import {
     initializeSocket,
     getSocket
@@ -32,8 +31,6 @@ function App() {
         async function initialize() {
 
             try {
-
-                await initializeBackend();
 
                 initializeSocket();
 

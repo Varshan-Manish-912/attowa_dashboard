@@ -1,16 +1,14 @@
 import { io } from "socket.io-client";
 
-import { getBackendUrl } from "./backend.js";
+import { BACKEND_URL } from "../config/config.js";
 
 let socket = null;
 
 export function initializeSocket() {
 
-    const backendUrl = getBackendUrl();
+    console.log("[Socket] Connecting to:", BACKEND_URL);
 
-    console.log("[Socket] Connecting to:", backendUrl);
-
-    socket = io(backendUrl, {
+    socket = io(BACKEND_URL, {
         transports: ["websocket", "polling"]
     });
 
