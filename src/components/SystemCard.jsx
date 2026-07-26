@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 function SystemCard({ system }) {
+
+    const navigate = useNavigate();
+
     return (
         <div className="system-card">
             <div className="card-header">
@@ -66,12 +71,26 @@ function SystemCard({ system }) {
                 <div className="footer-box">
                     <span>Last Check</span>
                     <strong>
-                        {new Date(
-                            system.lastCheck
-                        ).toLocaleTimeString()}
+                        {new Date(system.lastCheck).toLocaleString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: true
+                        }).replace("am", "AM").replace("pm", "PM")}
                     </strong>
                 </div>
             </div>
+
+            <button
+                className="history-button"
+                onClick={() => navigate(`/${system.name}/history`)}
+            >
+                Device History
+            </button>
+
         </div>
     );
 }

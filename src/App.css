@@ -508,3 +508,39 @@ footer {
     font-weight: 500;
     margin-left: 10px;
 }
+.history-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 18px auto 0;
+
+    padding: 12px 20px;
+
+    border: none;
+    border-radius: 999px;
+
+    background: #f8f5ef;
+    color: var(--dark-brown);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.history-button:hover {
+    background: var(--almond);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 18px rgba(139, 107, 71, 0.18);
+}
+
+.history-button:active {
+    transform: translateY(0);
+}
